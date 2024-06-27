@@ -186,29 +186,37 @@ class MLP:
         return params
         
     def softmax(self, x):
-        
+
         counts = [logit.exp() for logit in x]
         denominator = sum(counts)
         out = [c / denominator for c in counts]
-        
         return out
         
     def cross_entropy_loss(self, x, y):
-        loss = 0
-        for i in range(len(x)):
-            loss += y[i] * x[i].log()
-        return -loss
+
+        losses = []
+        for j in range(len(x)):
+
+            loss = 0
+            for i in range(len(x[j])):
+                loss += y[j][i] * x[j][i].log()
+            losses.append(-loss)
+            
+        return losses
 
     def __call__(self, x, activation=None):
-        for layer in self.layers:
-           #print(len(x))
-            #print(x)
-            x = layer(x)
 
-        if activation == "softmax":
-            x = self.softmax(x)
-            
-        return x
+        outputs = []
+        for i in range(len(x)):
+            input_i = x[i]
+            for layer in self.layers:
+                input_i = layer(input_i)
+    
+            if activation == "softmax":
+                input_i = self.softmax(input_i)
+                
+            outputs.append(input_i)
+        return outputs
     
         
     
