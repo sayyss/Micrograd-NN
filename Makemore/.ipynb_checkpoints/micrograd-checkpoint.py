@@ -202,7 +202,7 @@ class MLP:
                 loss += y[j][i] * x[j][i].log()
             losses.append(-loss)
             
-        return losses
+        return sum(losses)/len(losses)
 
     def __call__(self, x, activation=None):
 
